@@ -1,0 +1,9 @@
+---
+- name: Startup Rollback
+  command: echo "start to rollback php style project"
+# setup release
+- include: "setup.yml"
+# symlink
+- include: "symlink.yml"
+# Clean up release
+- include: "cleanup.yml"

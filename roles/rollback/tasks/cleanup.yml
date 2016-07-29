@@ -1,0 +1,6 @@
+---
+- name: Remove rolled back version
+  file:
+    state: absent
+    path: "{{ ans_releases_path.stdout }}/{{ ans_current_release_version.stdout }}"
+  when: ans_remove_rolled_back

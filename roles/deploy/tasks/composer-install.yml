@@ -1,0 +1,29 @@
+---
+- name: Ensure composer  folder exists
+  file:
+    state: directory
+    path: "{{ ans_composer_path | dirname }}"
+- name: Download composer
+  get_url:
+    url: https://getcomposer.org/installer
+    dest: /tmp/installer
+  tags: composer
+
+- name: Install composer
+  shell: cat /tmp/installer | php -- --install-dir={{ ans_composer_path | dirname }}
+  args:
+    creates: "{{ ans_composer_path }}"
+  tags: composer
+
+- name: Rename composer.phar to composer
+  shell: "mv {{ ans_composer_path | dirname }}/composer.phar {{ ans_composer_path }}"
+  args:
+    creates: "{{ ans_composer_path }}"
+  tags: composer
+
+- name: Make composer executable
+  file: 
+    path: "{{ ans_composer_path }}"
+    mode: a+x
+    state: file
+  tags: composer

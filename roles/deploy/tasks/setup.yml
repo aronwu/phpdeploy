@@ -1,0 +1,60 @@
+---
+# Setup folders
+- name: Ensure deployment base path exists
+  file:
+    state: directory
+    path: "{{ ans_deploy_to }}"
+
+- name: Set releases path
+  command: echo "{{ ans_deploy_to }}/{{ ans_version_dir }}"
+  register: ans_releases_path
+
+- name: Ensure releases folder exists
+  file:
+    state: directory
+    path: "{{ ans_releases_path.stdout }}"
+
+- name: Set shared path
+  command: echo "{{ ans_deploy_to }}/shared"
+  register: ans_shared_path
+
+- name: Ensure shared elements folder exists
+  file:
+    state: directory
+    path: "{{ ans_shared_path.stdout }}"
+
+- name: Change ownership installation
+  file: path={{ ans_deploy_to }} owner={{ ans_remote_user }} state=directory recurse=yes
+  sudo: True
+
+# storage path
+- name: Set storage path
+  command: echo "{{ ans_deploy_to }}/{{ storage_dir }}"
+  register: php_storage_path
+  when: storage_dir is defined
+
+- debug: msg="storage path = {{ php_storage_path }}"
+  when: storage_dir is defined
+
+- name: "Ensure storage path path exists"
+  file:
+    state: directory
+    path: "{{ php_storage_path.stdout }}"
+  when: storage_dir is defined
+
+- name: "Ensure storage sub path exists"
+  command: mkdir -p "{{ item }}"
+  with_items:
+    - "{{php_storage_path.stdout}}/app"
+    - "{{php_storage_path.stdout}}/framework"
+    - "{{php_storage_path.stdout}}/framework/cache"
+    - "{{php_storage_path.stdout}}/framework/views"
+    - "{{php_storage_path.stdout}}/logs"
+  when: storage_dir is defined
+
+- name: Change storage mode
+  file: path={{ php_storage_path.stdout }} owner={{ ans_remote_user }} mode=0777 state=directory recurse=yes
+  when: storage_dir is defined
+
+
+

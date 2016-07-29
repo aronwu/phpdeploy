@@ -1,0 +1,18 @@
+---
+# Migration check from rsync deployment
+- stat:
+    path: "{{ ans_deploy_to }}/{{ ans_current_dir }}"
+  register: stat_current_dir
+
+- name: Remove current folder if it's a directory
+  file:
+    state: absent
+    path: "{{ ans_deploy_to }}/{{ ans_current_dir }}"
+  when: stat_current_dir.stat.isdir is defined and stat_current_dir.stat.isdir
+
+# Performs symlink exchange
+- name: Change softlink to new release
+  file:
+    state: link
+    path: "{{ ans_deploy_to }}/{{ ans_current_dir }}"
+    src: "./{{ ans_version_dir }}/{{ ans_release_version }}"

@@ -1,0 +1,25 @@
+---
+- name: Get releases path
+  command: echo "{{ ans_deploy_to }}/{{ ans_version_dir }}"
+  register: ans_releases_path
+
+- name: Get number of releases
+  shell: echo `ls {{ ans_releases_path.stdout }} -1t | wc -l`
+  register: ans_versions_count
+
+- name: Check if there is more than one release
+  fail:
+    msg: "Could not roll back the code because there is no prior release"
+  when: ans_versions_count.stdout|int <= 1
+
+- name: Get current release version
+  shell: echo `ls {{ ans_releases_path.stdout }} -1t | head -n 1`
+  register: ans_current_release_version
+
+- name: Get previous releases version
+  shell: echo `ls {{ ans_releases_path.stdout }} -1t | head -n 2 | tail -n 1`
+  register: ans_previous_release_version
+
+- name: Get release path
+  command: echo "{{ ans_releases_path.stdout }}/{{ ans_previous_release_version.stdout }}"
+  register: ans_release_path

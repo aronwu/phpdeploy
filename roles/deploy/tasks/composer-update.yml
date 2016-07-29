@@ -1,0 +1,25 @@
+---
+# update vendor if composer.json file updated
+- stat: path="{{ ans_deploy_from }}composer.json"
+  register: ans_composer_json
+
+- name: "Check composer.json"
+  command: "git diff --name-only origin/master -- composer.json"
+  args:
+    chdir: "{{ ans_deploy_from }}"
+  register: ans_composer_updated
+
+- name: "Run composer update"
+  command: "{{ ans_composer_path }} install"
+  args:
+    chdir: "{{ ans_deploy_from }}"
+  when: ans_composer_updated == "composer.json" and ans_composer_json.stat.exists == true
+
+- stat: path="{{ ans_deploy_from }}/vendor"
+  register: ans_vendor_path_ok
+
+- name: "Run composer update if vendor fold is not existed"
+  command: "{{ ans_composer_path }} install"
+  args:
+    chdir: "{{ ans_deploy_from }}"
+  when: ans_vendor_path_ok.stat.exists == false and ans_composer_json.stat.exists == true

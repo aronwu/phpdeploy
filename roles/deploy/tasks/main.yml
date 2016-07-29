@@ -1,0 +1,48 @@
+---
+- name: Startup
+  command: echo "start to deploy php style project"
+# install composer
+- stat: path="{{ ans_composer_path }}"
+  register: ans_composer_path_ok
+# install composer when use sudo  --extra-vars "ansible_sudo_pass=XXXX"
+- include: "composer-install.yml"
+  delegate_to: 127.0.0.1
+  when: ans_composer_path_ok.stat.exists == False
+
+# git checkout code
+- include: "git.yml"
+  delegate_to: 127.0.0.1
+
+- name: Set storage path
+  command: echo "{{ ans_deploy_from }}/{{ storage_dir }}"
+  register: git_storage_path
+  when: storage_dir is defined
+
+# delete storage path
+- name: Delete  storage dir
+  file: path="{{ ans_deploy_from }}{{ storage_dir }}" state=absent
+  delegate_to: 127.0.0.1
+  when: storage_dir is defined
+  
+- include: "composer-update.yml"
+  delegate_to: 127.0.0.1
+# copy env file
+- include: "env-copy.yml"
+  delegate_to: 127.0.0.1
+# setup release
+- include: "setup.yml"
+  remote_user: "{{ ans_remote_user }}"
+  sudo: true
+# upload code 
+- include: "update-code.yml"
+# symlink
+- include: "symlink.yml"
+# change storage link
+- name: Change new release storage softlink
+  file:
+    state: link
+    path: "{{ ans_deploy_to }}/{{ ans_version_dir }}/{{ ans_release_version }}/{{ storage_dir }}"
+    src: "{{ ans_deploy_to }}/{{ storage_dir }}"
+  when: storage_dir is defined
+# Clean up release
+- include: "cleanup.yml"

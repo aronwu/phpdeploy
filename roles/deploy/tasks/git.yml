@@ -1,0 +1,16 @@
+---
+# checkout code from git repo
+- name: "Checkout from git repo: {{ ans_git_repo }}"
+  git: 
+    repo: "{{ ans_git_repo }}" 
+    dest: "{{ ans_deploy_from }}" 
+    version: "{{ ans_git_branch }}" 
+    force: yes
+  register: ans_git_result
+  run_once: true
+
+- debug: msg="git result {{ ans_git_result }}"
+
+
+
+

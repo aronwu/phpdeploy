@@ -1,0 +1,19 @@
+---
+# Update code deployment step
+- name: Get release version
+  set_fact:
+    ans_release_version: "{{ lookup('pipe', 'date -u +%Y%m%d%H%M%SZ') }}"
+  run_once: true
+  when: ans_release_version is not defined
+  delegate_to: 127.0.0.1
+
+- name: Get release path
+  command: echo "{{ ans_releases_path.stdout }}/{{ ans_release_version }}"
+  register: ans_release_path
+
+- include: "rsync.yml"
+
+- name: Copy release version into REVISION file
+  copy:
+    content: "{{ ans_release_version }}"
+    dest: "{{ ans_release_path.stdout }}/REVISION"

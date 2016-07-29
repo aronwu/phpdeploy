@@ -1,0 +1,16 @@
+---
+# deploy global vars
+ans_source_path: "/Users/wuxinjun/git/test/phpdeploy"
+ans_version_dir: "release"
+ans_current_dir: "current"
+ans_current_via: "symlink"
+ans_shared_paths: []
+ans_shared_files: []
+ans_keep_releases: 10
+ans_deploy_via: "rsync"
+ans_remove_rolled_back: true
+ans_rsync_extra_params: " --exclude-from=.excludes "
+ans_composer_path: "/usr/bin/composer"
+# package manage 
+ansible_pkg_mgr: yum
+ans_remote_user: deploy

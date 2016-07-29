@@ -1,0 +1,6 @@
+---
+- name: Change web softlink from current release to previous one
+  file:
+    state: link
+    path: "{{ ans_deploy_to }}/{{ ans_current_dir }}"
+    src: "./{{ ans_version_dir }}/{{ ans_previous_release_version.stdout }}"

@@ -1,0 +1,2 @@
+[apihosts]
+api1 ansible_ssh_user=deploy

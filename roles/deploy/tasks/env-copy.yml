@@ -1,0 +1,4 @@
+---
+- name: Copy .env file
+  command: "cp -a {{ ans_env_file }} {{ ans_deploy_from }}.env"
+  when: ans_env_file != ""

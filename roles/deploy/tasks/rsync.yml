@@ -1,0 +1,15 @@
+---
+- name: RSYNC | Get shared path (in rsync case)
+  command: echo "{{ ans_shared_path.stdout }}/.shared-copy"
+  register: ans_shared_rsync_copy_path
+
+- name: RSYNC | Rsync application files to remote shared copy
+  synchronize:
+    src: "{{ ans_deploy_from }}"
+    dest: "{{ ans_shared_rsync_copy_path.stdout }}"
+    recursive: yes
+    delete: yes
+    archive: yes
+    compress: yes
+- name: RSYNC | Deploy existing code to servers
+  command: cp -a {{ ans_shared_rsync_copy_path.stdout }} {{ ans_release_path.stdout }}

@@ -1,0 +1,8 @@
+---
+- hosts: apihosts
+  vars:
+    env: "{{ deploy_env | default('prod')}}"
+  vars_files:
+    - group_vars/apihosts
+  roles:
+    - deploy

@@ -1,0 +1,6 @@
+---
+- name: Copy nginx configuration file
+  template: 
+    src:  nginx.conf
+    dest: /etc/nginx/conf.d/{{ nginx_domain_name}}.conf
+  sudo: true
