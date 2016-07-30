@@ -2,7 +2,7 @@
 # deploy vars
 ans_deploy_from: "{{ ans_source_path }}/source/api/"
 ans_deploy_to: "/opt/demo/api"
-ans_git_repo: git@bitbucket.org:rrlt/hjm_api.git
+ans_git_repo: git@bitbucket.org:xxx/xxx.git
 ans_git_branch: "{{ git_branch | default('master')}}"
 ans_rsync_set_remote_user: deploy
 ans_rsync_extra_params:
@@ -14,4 +14,4 @@ storage_dir: "storage"
 #nginx configuration
 nginx_domain_name: "api.demo.com"
 nginx_log_root: "/var/log/nginx"
-nginx_document_root: "{{ ans_deploy_to }}/public"
+nginx_document_root: "{{ ans_deploy_to }}/current/public"
