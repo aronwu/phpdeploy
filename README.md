@@ -131,10 +131,3 @@ ansible-playbook -i envs/dev/hosts apideploy.yml --extra-vars "deploy_env=dev gi
 ```
 
 
-
-```
-
-
-1. 其中SCRIPT_FILENAME  $realpath_root$fastcgi_script_name配置用的是realpath_root
-2. nginx document root 指向发布目录的current下。
-
