@@ -2,8 +2,44 @@
 
 **phpdeploy**使用**ansible**快速发布PHP项目，自动从git仓库检出代码，自动检查composer.json是否有更新自动更新vendor, 同时区分多个开发，测试，产线环境以及一键快速回滚代码到上个版本。
 
+## 全局配置参数
 
-## 发布参数
+文件group_vars/all
+```
+---
+# deploy global vars
+ans_source_path: "/Users/wuxinjun/git/test/phpdeploy"
+ans_version_dir: "release"
+ans_current_dir: "current"
+ans_current_via: "symlink"
+ans_shared_paths: []
+ans_shared_files: []
+ans_keep_releases: 10
+ans_deploy_via: "rsync"
+ans_remove_rolled_back: true
+ans_rsync_extra_params: " --exclude-from=.excludes "
+ans_composer_path: "/usr/bin/composer"
+# package manage 
+ans_pkg_mgr: yum
+ans_remote_user: deploy
+
+```
+1. ans_source_path: 整个项目所有从git库检出的项目代码source目录
+2. ans_version_dir: 发布到远程主机的项目release目录名称
+3. ans_current_dir: 发布到远程主机的项目current目录名称
+4. ans_current_via: current目录链接到最新release版本方法
+5. ans_keep_releases： release目录保留最多历史版本数目
+6. ans_deploy_via： 远程同步脚本方法
+7. ans_remove_rolled_back： 当回滚代码时是否删除当前版本的代码
+8. ans_composer_path：本机composer命令路径
+9. ans_pkg_mgr: 包管理命令
+10. ans_remote_user: 远程执行用户
+
+
+
+## 主机组发布参数
+
+在group_vars目录下，默认有个apihosts主机组配置参数
 
 ```
 ---
@@ -75,6 +111,25 @@ server {
         include        fastcgi_params;
     }
 }
+
+
+```
+
+
+1. 其中SCRIPT_FILENAME  $realpath_root$fastcgi_script_name配置用的是realpath_root
+2. nginx document root 指向发布目录的current下。
+
+##  不同环境
+
+phpdeploy可以支持开发，测试，产线多个环境发布任务。envs目录默认包含了开发，测试和产线配置，每个目录下有hosts文件可以配置不同环境下的主机。每个环境下包含不同ansible组的环境配置文件.env.
+
+## 执行发布命令
+
+```
+ansible-playbook -i envs/dev/hosts apideploy.yml --extra-vars "deploy_env=dev git_branch=master"
+
+```
+
 
 
 ```
