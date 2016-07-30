@@ -12,5 +12,5 @@ ans_remove_rolled_back: true
 ans_rsync_extra_params: " --exclude-from=.excludes "
 ans_composer_path: "/usr/bin/composer"
 # package manage 
-ansible_pkg_mgr: yum
+ans_pkg_mgr: yum
 ans_remote_user: deploy
